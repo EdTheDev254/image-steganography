@@ -6,3 +6,5 @@ Each pixel in a standard RGB image contains 3 bytes of data (Red, Green, and Blu
 - Encode text messages into an image by converting the text into binary and storing the bits inside the pixel data.
 - Decode and retrieve the hidden message by reading back the LSBs in the same order.
 - Use lossless formats like PNG or BMP (since JPEG compression destroys exact LSB values).
+
+This principle is the same as the Audio LSB project I created:
