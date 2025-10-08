@@ -5,11 +5,11 @@ import cv2
 def text_to_bits(message: str) -> str:
     return ''.join(format(ord(c), '08b') for c in message)
 
-# --- Bits to Text 
+# --- Bits to Text ---
 def bits_to_text(bits: str) -> str:
     return ''.join(chr(int(bits[i:i+8], 2)) for i in range(0, len(bits), 8))
 
-# --- Encode The Message ---
+# --- Encode Message ---
 def encode_message(image_path: str, message: str, output_path: str = "encoded.png"):
     try:
         image = cv2.imread(image_path)
@@ -38,18 +38,40 @@ def encode_message(image_path: str, message: str, output_path: str = "encoded.pn
     except Exception as e:
         print(f"Error during encoding: {e}")
 
-# Decode Message
+# --- Decode Message ---
+def decode_message(stego_image: str):
+    try:
+        image = cv2.imread(stego_image)
+        if image is None:
+            raise FileNotFoundError(f"Could not open {stego_image}")
 
+        pixels = image.reshape(-1, 3).flatten()
+
+        message_length = int(''.join(str(pixels[i] & 1) for i in range(32)), 2)
+        message_bits = ''.join(str(pixels[i] & 1) for i in range(32, 32 + message_length))
+        message = bits_to_text(message_bits)
+        print("✅ Message decoded successfully.")
+        return message
+
+    except Exception as e:
+        print(f"Error during decoding: {e}")
+        return None
 
 # --- Example Usage ---
 if __name__ == "__main__":
-    image_path = input("Enter image path: ").strip()
-    message = input("Enter message to hide: ").strip()
-    output_path = input("Enter output file name (e.g. encoded.png): ").strip()
+    mode = input("Enter mode (encode/decode): ").strip().lower()
 
-    if image_path and message and output_path:
+    if mode == "encode":
+        image_path = input("Enter image path: ").strip()
+        message = input("Enter message to hide: ").strip()
+        output_path = input("Enter output file name (e.g. encoded.png): ").strip()
         encode_message(image_path, message, output_path)
+
+    elif mode == "decode":
+        stego_image = input("Enter image to decode: ").strip()
+        message = decode_message(stego_image)
+        if message:
+            print("Hidden message:\n", message)
+
     else:
-        print("Missing input. Please provide all required details.")
-
-
+        print("Invalid mode. Use 'encode' or 'decode'.")
