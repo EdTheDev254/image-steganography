@@ -1,5 +1,6 @@
 # from main branch as a single file 
 import cv2
+from message import message_to_hide
 
 # --- Text to Bits --
 def text_to_bits(message: str) -> str:
@@ -63,7 +64,7 @@ if __name__ == "__main__":
 
     if mode == "encode":
         image_path = input("Enter image path: ").strip()
-        message = input("Enter message to hide: ").strip()
+        message = message_to_hide
         output_path = input("Enter output file name (e.g. encoded.png): ").strip()
         encode_message(image_path, message, output_path)
 
